@@ -8,24 +8,23 @@ form.addEventListener("submit", async (e) => {
   result.textContent = "";
   hint.textContent = "Calcul en cours…";
 
-  const date = birth.value; // "YYYY-MM-DD"
   try {
     const res = await fetch("/api/zodiac", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ date })
+      body: JSON.stringify({ date: birth.value })
     });
 
     const data = await res.json();
 
-    if (data.error) {
+    if (!res.ok) {
       hint.textContent = "";
-      result.textContent = data.error;
+      result.textContent = data.error || `Erreur API (${res.status})`;
       return;
     }
 
     hint.textContent = "";
-    result.textContent = `Ton signe est : ${data.sign} ♈️`;
+    result.textContent = `Ton signe est : ${data.sign}`;
   } catch (err) {
     hint.textContent = "";
     result.textContent = "Erreur : impossible de contacter l’API.";
